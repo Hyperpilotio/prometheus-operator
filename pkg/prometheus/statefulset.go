@@ -32,7 +32,7 @@ import (
 	"github.com/blang/semver"
 	monitoringv1 "github.com/coreos/prometheus-operator/pkg/client/monitoring/v1"
 	"github.com/pkg/errors"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -350,8 +350,13 @@ func makeStatefulSetSpec(p monitoringv1.Prometheus, c *Config, ruleConfigMaps []
 			fmt.Sprintf("-storage.tsdb.path=%s", prometheusStorageDir),
 			"-storage.tsdb.retention="+p.Spec.Retention,
 			"-web.enable-lifecycle",
-			c.PrometheusConfig,
 		)
+
+		// add all Prometheus related configurations
+		promConfigList := strings.Split(c.PrometheusConfig, ",")
+		for _, conf := range promConfigList {
+			promArgs = append(promArgs, conf)
+		}
 
 		gid := int64(2000)
 		uid := int64(1000)
@@ -559,9 +564,9 @@ func makeStatefulSetSpec(p monitoringv1.Prometheus, c *Config, ruleConfigMaps []
 				ServiceAccountName:            p.Spec.ServiceAccountName,
 				NodeSelector:                  p.Spec.NodeSelector,
 				TerminationGracePeriodSeconds: &terminationGracePeriod,
-				Volumes:     volumes,
-				Tolerations: p.Spec.Tolerations,
-				Affinity:    p.Spec.Affinity,
+				Volumes:                       volumes,
+				Tolerations:                   p.Spec.Tolerations,
+				Affinity:                      p.Spec.Affinity,
 			},
 		},
 	}, nil
