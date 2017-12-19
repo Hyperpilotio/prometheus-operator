@@ -350,6 +350,7 @@ func makeStatefulSetSpec(p monitoringv1.Prometheus, c *Config, ruleConfigMaps []
 			fmt.Sprintf("-storage.tsdb.path=%s", prometheusStorageDir),
 			"-storage.tsdb.retention="+p.Spec.Retention,
 			"-web.enable-lifecycle",
+			c.PrometheusConfig,
 		)
 
 		gid := int64(2000)

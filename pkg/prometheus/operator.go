@@ -126,6 +126,7 @@ type Config struct {
 	Labels                       Labels
 	CrdGroup                     string
 	CrdKinds                     monitoringv1.CrdKinds
+	PrometheusConfig             string
 }
 
 type BasicAuthCredentials struct {
