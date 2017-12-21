@@ -353,9 +353,11 @@ func makeStatefulSetSpec(p monitoringv1.Prometheus, c *Config, ruleConfigMaps []
 		)
 
 		// add all Prometheus related configurations
-		promConfigList := strings.Split(c.PrometheusConfig, ",")
-		for _, conf := range promConfigList {
-			promArgs = append(promArgs, conf)
+		if c.PrometheusConfig != "" {
+			promConfigList := strings.Split(c.PrometheusConfig, ",")
+			for _, conf := range promConfigList {
+				promArgs = append(promArgs, conf)
+			}
 		}
 
 		gid := int64(2000)
